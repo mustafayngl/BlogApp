@@ -1,0 +1,58 @@
+﻿@model BlogApp.Models.BlogPost
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<h2>@Model.Title</h2>
+<p>
+    <small>By @Model.ApplicationUser?.UserName on @Model.PublishDate.ToShortDateString()</small>
+</p>
+<div>
+    @Html.Raw(Model.Content)
+</div>
+@if (!string.IsNullOrEmpty(Model.ImageUrl))
+{
+    <div class="mt-2">
+        <img src="@Model.ImageUrl" alt="Blog image" class="img-fluid" />
+    </div>
+}
+
+<hr />
+<h4>Comments</h4>
+
+<div id="comments">
+    @if (Model.Comments != null && Model.Comments.Any())
+    {
+        foreach (var comment in Model.Comments.OrderByDescending(c => c.PublishDate))
+        {
+            <div class="border p-2 mb-2">
+                <p>@comment.Content</p>
+                <p>
+                    <small>By @comment.ApplicationUser?.UserName on @comment.PublishDate.ToShortDateString()</small>
+                </p>
+            </div>
+        }
+    }
+    else
+    {
+        <p>No comments yet.</p>
+    }
+</div>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <hr />
+    <h4>Add a Comment</h4>
+    <form method="post" action="@Url.Action("Create", "Comments")">
+        <input type="hidden" name="blogPostId" value="@Model.Id" />
+        <div class="form-group">
+            <textarea name="content" class="form-control" rows="3" placeholder="Enter your comment"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Submit</button>
+    </form>
+}
+else
+{
+    <p>Please <a href="/Identity/Account/Login">login</a> to add a comment.</p>
+}

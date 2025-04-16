@@ -1,0 +1,38 @@
+﻿@model IEnumerable<BlogApp.Models.BlogPost>
+
+@{
+    ViewData["Title"] = "Home";
+    var categories = ViewBag.Categories as List<BlogApp.Models.Category> ?? new List<BlogApp.Models.Category>();
+}
+
+<h2>Blog Posts</h2>
+
+<form method="get" class="form-inline mb-3">
+    <select name="categoryId" class="form-control">
+        <option value="">All Categories</option>
+        @foreach (var cat in categories)
+        {
+            <option value="@cat.Id">@cat.Name</option>
+        }
+    </select>
+    <button type="submit" class="btn btn-primary ml-2">Filter</button>
+</form>
+
+@foreach (var post in Model)
+{
+    <div class="card mb-3">
+        <div class="card-body">
+            <h3 class="card-title">
+                <a href="@Url.Action("Details", "Home", new { id = post.Id })">@post.Title</a>
+            </h3>
+            <p class="card-text">
+                @((post.Content.Length > 150) ? post.Content.Substring(0, 150) + "..." : post.Content)
+            </p>
+            <p class="card-text">
+                <small class="text-muted">
+                    By @post.ApplicationUser?.UserName on @post.PublishDate.ToShortDateString()
+                </small>
+            </p>
+        </div>
+    </div>
+}

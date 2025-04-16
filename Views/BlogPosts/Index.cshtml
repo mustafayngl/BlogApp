@@ -1,0 +1,35 @@
+﻿@model IEnumerable<BlogApp.Models.BlogPost>
+
+@{
+    ViewData["Title"] = "My Blog Posts";
+}
+
+<h2>My Blog Posts</h2>
+<p>
+    <a class="btn btn-success" href="@Url.Action("Create")">Create New Post</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Publish Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var post in Model)
+        {
+            <tr>
+                <td>@post.Title</td>
+                <td>@post.Category?.Name</td>
+                <td>@post.PublishDate.ToShortDateString()</td>
+                <td>
+                    <a class="btn btn-primary btn-sm" href="@Url.Action("Edit", new { id = post.Id })">Edit</a>
+                    <a class="btn btn-danger btn-sm" href="@Url.Action("Delete", new { id = post.Id })">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
